@@ -10,7 +10,9 @@ import org.d3if0088.galerihewan.databinding.ListItemBinding
 import org.d3if0088.galerihewan.network.HewanApi
 
 class MainAdapter : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
+
     private val data = mutableListOf<Hewan>()
+
     fun updateData(newData: List<Hewan>) {
         data.clear()
         data.addAll(newData)

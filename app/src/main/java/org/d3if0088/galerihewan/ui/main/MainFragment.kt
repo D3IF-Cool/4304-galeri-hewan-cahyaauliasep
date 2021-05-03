@@ -5,13 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import org.d3if0088.galerihewan.Hewan
-import org.d3if0088.galerihewan.R
 import org.d3if0088.galerihewan.databinding.FragmentMainBinding
+import org.d3if0088.galerihewan.network.HewanApi
 
 class MainFragment : Fragment() {
 
@@ -39,9 +38,28 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(viewModel) {
-            getData().observe(viewLifecycleOwner, {
+            getData().observe(viewLifecycleOwner, Observer{
                 myAdapter.updateData(it)
             })
+
+            viewModel.getStatus().observe(viewLifecycleOwner, Observer{
+                updateProgress(it)
+            })
+        }
+    }
+
+    private fun updateProgress(status: HewanApi.ApiStatus) {
+        when (status) {
+            HewanApi.ApiStatus.LOADING -> {
+                binding.progressBar.visibility = View.VISIBLE
+            }
+            HewanApi.ApiStatus.SUCCESS -> {
+                binding.progressBar.visibility = View.GONE
+            }
+            HewanApi.ApiStatus.FAILED -> {
+                binding.progressBar.visibility = View.GONE
+                binding.networkError.visibility = View.VISIBLE
+            }
         }
     }
 }
